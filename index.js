@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const pool = require("./db");
 
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 app.use(express.json());
 
@@ -86,40 +86,32 @@ app.get("/articles",async(req, res) => {
 app.post("/login",async(req,res) => {
     const {name,password} = req.body;
     try {
-    const data = await pool.query("SELECT * FROM client WHERE name = $1", [name]); 
+    const data = await pool.query("SELECT * FROM client WHERE name = $1", [
+        name
+    ]); 
     const client = data.rows[0];
     if (client.length === 0) {
-    res.status(400).json({
-    error: "User is not registered, Sign Up first",
-    });
-    }
-    else {
-    bcrypt.compare(password,client.password, (err, result) => { //Comparing the hashed password
-    if (err) {
-    res.status(500).json({
-    error: "Server error",
-    });
-    } else if (result) { //Checking if credentials match
-    const token = jwt.sign(
-    {
-    name: name,
-    },
-    process.env.SECRET_KEY
-    );
+        res.status(400).json({
+        error: "User is not registered, Sign Up first",
+        });
+        client ={name,password};
+        }
+     else if(password != client.password){
+        res.status(400).json({
+            error: "Enter correct password!",
+            });
+    };
+  /*  const token = jwt.sign(
+        {
+        name: name,
+        },
+        process.env.SECRET_KEY
+        ); 
+  */      
     res.status(200).json({
     message: "User signed in!",
-    token: token,
+  //  token: token,
     });
-    }
-    else {
-    //Declaring the errors
-    if (result != true)
-    res.status(400).json({
-    error: "Enter correct password!",
-    });
-    }
-    })
-    }
     } catch (err) {
     console.log(err);
     res.status(500).json({
