@@ -8,10 +8,17 @@ CREATE TABLE article(
     prix_ttc VARCHAR(6)
 
 );
-CREATE TABLE client(
-Client_Id SERIAL PRIMARY KEY,
+CREATE TABLE users(
+id SERIAL PRIMARY KEY,
 name VARCHAR(50),
-password VARCHAR(50),
 email VARCHAR(50),
-phone VARCHAR(15)
+password VARCHAR(50)
+);
+CREATE TABLE reservation(
+id SERIAL PRIMARY KEY,
+article VARCHAR(50),
+quantite VARCHAR(15),
+prix_ttc VARCHAR(15),
+date VARCHAR(20),
+user_id VARCHAR(5)
 );
