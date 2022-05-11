@@ -1,5 +1,5 @@
 const express = require("express");
-const { Register, Login } = require("../controllers/user.controllers");
+const { Register, Login ,GetUser} = require("../controllers/user.controllers");
 const isAuth = require("../middleware/isAuth");
 const {
   validation,
@@ -36,6 +36,7 @@ router.post("/login", loginValidate(), validation, Login);
 router.get("/current", isAuth, (req, res) => {
   res.send({ msg: "authorized", user: req.user });
 });
+router.get("/user",GetUser);
 
 // default export
 module.exports = router;
