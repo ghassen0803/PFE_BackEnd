@@ -10,3 +10,4 @@ router.post("/articles",PostArticle);
 router.delete("/articles/:id",DeleteArticle);
 
 
+module.exports = router ;

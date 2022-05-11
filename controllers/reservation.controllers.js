@@ -46,4 +46,4 @@ exports.DeleteRes = async(req,res) => {
         console.error(err.message);
     }
 
-});
+};

@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const pool = require("./config/db");
 
-const app = express();
 
 require("dotenv").config();
 
