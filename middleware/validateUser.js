@@ -8,7 +8,6 @@ exports.registerValidate = () => [
 ];
 exports.loginValidate = () => [
   check("email", "should be email").isEmail(),
-  check("password", "enter a valid password").isLength({ min: 6 }),
 ];
 
 exports.validation = (req, res, next) => {

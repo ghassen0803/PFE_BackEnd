@@ -1,5 +1,5 @@
 const pool = require("../config/db");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
@@ -24,22 +24,16 @@ exports.Register = async (req, res) => {
     // new user
     let newUser = await pool.query(
       "INSERT INTO users (id,name, email, password) VALUES ($1, $2, $3,$4) RETURNING *",
-      [Math.random(255), name, email, hashedpassword]
+      [5, name, email, password]
     );
 
     // CREATE the TOKEN with jwt
-    const token = jwt.sign(
-      {
-        id: newUser.id,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "3h" }
-    );
+    const token = null;
     // response
     res.status(200).send({ msg: "register succ", user: newUser, token });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ errors: [{ msg: "user not saved" }] });
+    res.status(500).send({ errors: [{ msg: "user not saved "+error.message }] });
   }
 };
 
@@ -59,14 +53,14 @@ exports.Login = async (req, res) => {
     }
     // test password
     //   password in  BD== password
-    const comparePass = await bcrypt.compare(
-      password,
-      findUser.rows[0].password
-    );
+    var comparePass =false;
+    if (password==findUser.rows[0].password){
+      comparePass=true;
+    }
     // wrong password
     // bad crential
     if (!comparePass) {
-      return res.status(400).send({ errors: [{ msg: "bad credential" }] });
+      return res.status(400).send({ errors: [{ msg: "bad credential"+comparePass }] });
     }
     // CREATE A TOKEN
     const token = jwt.sign(
@@ -78,7 +72,7 @@ exports.Login = async (req, res) => {
     );
     res.status(200).send({ msg: "login successfully", user: findUser, token });
   } catch (error) {
-    res.status(500).send({ errors: [{ msg: "can not login" }] });
+    res.status(500).send({ errors: [{ msg: "can not login"+error.message }] });
   }
 };
 exports.GetUser = async(req, res) => {
